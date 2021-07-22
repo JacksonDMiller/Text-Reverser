@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Jackson's Text Reverser</title>
+
+    <meta name="description" content="A page for reversing text" />
+    <meta property="og:title" content="Jackson's Text Reverser" />
+    <meta property="og:description" content="A page for reversing text" />
+    <meta
+      property="og:image"
+      content="https://image.flaticon.com/icons/png/512/335/335421.png"
+    />
+    <meta property="og:image:alt" content="Reverse icon" />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <link
+      rel="icon"
+      href="https://image.flaticon.com/icons/png/512/335/335421.png"
+    />
+    <meta name="theme-color" content="#c1c1c1" />
+
+    <style>
+      body {
+        font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
+      }
+
+      h1 {
+        color: #3f3f3f;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+      }
+
+      .text-box-container {
+        display: flex;
+        flex-direction: column;
+        width: 50%;
+      }
+
+      .title-container {
+        border: solid 1px #c1c1c1;
+        border-bottom: none;
+      }
+
+      h3 {
+        color: #2479e9;
+        margin: 5px;
+      }
+
+      textarea {
+        resize: none;
+        height: 150px;
+        border: solid 1px #c1c1c1;
+        padding: 15px;
+      }
+
+      .form-container {
+        display: flex;
+        justify-content: space-between;
+        margin: 5px;
+      }
+
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+      }
+
+      button {
+        align-self: flex-end;
+        margin: 5px;
+        color: #c1c1c1;
+        background: white;
+        border: solid 1px #c1c1c1;
+        padding: 5px;
+      }
+
+      .character-counter {
+        align-self: flex-end;
+        color: #c1c1c1;
+      }
+
+      .footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+      }
+
+      @media only screen and (max-width: 700px) {
+        .container {
+          flex-direction: column;
+        }
+        .text-box-container {
+          width: 100%;
+        }
+      }
+    </style>
+
+    <script type="module">
+      const reverseText = () => {
+        let input = document.getElementById("user-input").value;
+        document.getElementById("reversed-text").value = [...input]
+          .reverse()
+          .join("");
+      };
+
+      const reverseLineByLine = () => {
+        let input = document.getElementById("user-input").value;
+        const arrayOfLines = input.split("\n");
+        let arryOfReversedLines = [];
+        for (const line in arrayOfLines) {
+          arryOfReversedLines.push([...arrayOfLines[line]].reverse().join(""));
+        }
+        document.getElementById("reversed-text").value =
+          arryOfReversedLines.join("\n");
+      };
+
+      // listen for keyup events on user-input and render the reversed text
+      document.addEventListener(
+        "keyup",
+        function (event) {
+          if (!event.target.matches("#user-input")) return;
+          const reverseType = document.querySelector(
+            'input[name="reverse-type"]:checked'
+          ).value;
+          if (reverseType === "reverse") {
+            reverseText();
+          } else {
+            reverseLineByLine();
+          }
+
+          // update the character counter for the user input
+          const userInput = document.getElementById("user-input");
+          document.getElementById("current-length").innerHTML =
+            userInput.value.length;
+        },
+        false
+      );
+
+      // listen for clicks on the reset button and reset the app
+      document.addEventListener(
+        "click",
+        function (event) {
+          if (event.target.matches("#reverse")) {
+            reverseText();
+          }
+          if (event.target.matches("#reverse-line-by-line")) {
+            reverseLineByLine();
+          }
+          if (!event.target.matches("#reset")) return;
+          if (document.getElementById("user-input").value === "") {
+            alert("There is nothing to reset");
+            return;
+          }
+          document.getElementById("user-input").value = "";
+          document.getElementById("reversed-text").value = "";
+          document.getElementById("current-length").innerHTML = 0;
+        },
+        false
+      );
+
+      function copy() {
+        const reversedText = document.querySelector("#reversed-text");
+        if (!reversedText.value){
+          alert("There is nothing to copy");
+          return;
+        }
+        reversedText.select();
+        document.execCommand("copy");
+      }
+      document.querySelector("#copy").addEventListener("click", copy);
+    </script>
+  </head>
+
+  <body>
+    <h1>Jackson's Text Reverser</h1>
+    <div class="container">
+      <div class="text-box-container">
+        <div class="title-container">
+          <h3>Original</h3>
+        </div>
+        <textarea
+          id="user-input"
+          maxlength="300"
+          placeholder="Please input the text you want reversed"
+        ></textarea>
+        <div class="form-container">
+          <form>
+            <input
+              checked
+              type="radio"
+              id="reverse"
+              name="reverse-type"
+              value="reverse"
+            />
+            <label for="reverse">Reverse</label>
+            <input
+              type="radio"
+              name="reverse-type"
+              id="reverse-line-by-line"
+              value="reverse-line-by-line"
+            />
+            <label for="reverse-line-by-line">Reverse Line by Line</label>
+          </form>
+          <span class="character-counter">
+            <span id="current-length">0</span>/300</span
+          >
+        </div>
+      </div>
+      <div class="text-box-container">
+        <div class="title-container">
+          <h3>Reversed</h3>
+        </div>
+        <textarea readonly id="reversed-text"> </textarea>
+        <div class="button-container">
+          <button id="reset">Reset</button>
+          <button id="copy">Copy</button>
+        </div>
+      </div>
+    </div>
+    <div></div>
+    <footer>
+      <div class="footer">
+        Favicon made by
+        <a
+          href="https://www.flaticon.com/authors/creaticca-creative-agency"
+          title="Creaticca Creative Agency"
+          >Creaticca Creative Agency</a
+        >
+      </div>
+    </footer>
+  </body>
+</html>
